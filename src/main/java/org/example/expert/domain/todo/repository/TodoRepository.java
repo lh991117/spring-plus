@@ -8,9 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
-public interface TodoRepository extends JpaRepository<Todo, Long> {
+public interface TodoRepository extends JpaRepository<Todo, Long>, TodoRepositoryQuery {
 
     @Query("SELECT t FROM Todo t LEFT JOIN FETCH t.user u " +
             "WHERE (:weather IS NULL OR t.weather = :weather) " +
@@ -23,8 +22,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             @Param("endDate") LocalDateTime endDate,
             Pageable pageable);
 
-    @Query("SELECT t FROM Todo t " +
-            "LEFT JOIN t.user " +
-            "WHERE t.id = :todoId")
-    Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
+//    @Query("SELECT t FROM Todo t " +
+//            "LEFT JOIN t.user " +
+//            "WHERE t.id = :todoId")
+//    Optional<Todo> findByIdWithUser(@Param("todoId") Long todoId);
 }

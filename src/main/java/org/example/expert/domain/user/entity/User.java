@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import org.example.expert.domain.common.dto.AuthUser;
 import org.example.expert.domain.common.entity.Timestamped;
 import org.example.expert.domain.user.enums.UserRole;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.ArrayList;
 
 @Getter
 @Entity
@@ -37,7 +40,14 @@ public class User extends Timestamped {
     }
 
     public static User fromAuthUser(AuthUser authUser) {
-        return new User(authUser.getId(), authUser.getEmail(), authUser.getAuthorities());
+        //authorities의 타입을 UserRole값으로 반환
+        UserRole userRole = authUser.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(UserRole::valueOf)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 권한 정보입니다."));
+
+        return new User(authUser.getId(), authUser.getEmail(), userRole);
     }
 
     public void changePassword(String password) {
